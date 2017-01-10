@@ -1,0 +1,25 @@
+
+sudo: required
+language: node_js
+node_js:
+- '6'
+- '7'
+addons:
+  postgresql: '9.4'
+
+before_install:
+- wget https://raw.githubusercontent.com/Vincit/travis-oracledb-xe/master/accept_the_license_agreement_for_oracledb_xe_11g_and_install.sh
+- bash ./accept_the_license_agreement_for_oracledb_xe_11g_and_install.sh
+- npm install oracledb
+
+before_script:
+- psql -c 'create database knex_hooks_test;' -U postgres
+- mysql -e 'create database knex_hooks_test;'
+
+script:
+- export NODE_ENV=test
+- export ORACLE_HOME=/u01/app/oracle/product/11.2.0/xe
+- export ORACLE_SID=XE
+- export OCI_LIB_DIR=/u01/app/oracle/product/11.2.0/xe/lib
+- export LD_LIBRARY_PATH=/u01/app/oracle/product/11.2.0/xe/lib
+- KNEX_CLIENT=pg DATABASE_URL=postgres://localhost/knex_hooks_test npm test
