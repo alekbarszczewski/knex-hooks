@@ -117,52 +117,15 @@ helpers.extendKnex(knex, function callback (knex, isRoot) {
 });
 ```
 
-#### Example use-case
+**extendBuilder**
 
-Simple validation plugin
+Allows to modify knex builder (even sub-instances created by transations)
 
 ```js
-const knexHooks = require('knex-hooks');
+const helpers = require('knex-hooks').helpers;
 
-const knex = require('knex')({
-  client: 'pg',
-  connection: '',
+helpers.extendBuilder(knex, function callback (builder, isRoot) {
+  // builder is knex query builder instance
+  // you can modify builder here (ie. add some methods/properties to it)
 });
-
-knexHooks(knex);
-
-knexHook.helpers.modifyKnex(knex, (knex) => {
-  (function (queryBuilder) {
-    knex.queryBuilder = function () {
-      const qb = queryBuilder.apply(this, arguments);
-      qb._validate = false;
-      qb.validate = function (validate) {
-        this._validate = !!validate;
-      }
-    }
-  })(knex.queryBuilder);
-});
-
-const validate = function (method, table, validator) {
-  knex.addHook('before', method, table, (when, method, table, params) => {
-    if (!params.query._validate) return;
-    const data = method === 'insert' ? knexHooks.helpers.getInsertData(params.query) : knexHooks.helpers.getUpdateData(params.query);
-    return validator(data);
-  });
-}
-
-validate('insert', 'users', function (data) {
-  if (!data.name) {
-    throw new Error('name is required');
-  }
-});
-
-validate('update', 'users', function (data) {
-  if (!data.name) {
-    throw new Error('name is required');
-  }
-});
-
-knex('users').insert({ name: '' }).validate().then(...);
-knex('users').update({ name: '' }).validate().then(...);
 ```
