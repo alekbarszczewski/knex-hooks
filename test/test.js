@@ -295,6 +295,25 @@ describe('knex-hooks', function () {
     });
   }));
 
+  it('should disable hooks by setting builder.hooks(false)', co.wrap(function *() {
+    const handlers = addHandlers(this.knex, 'test1');
+    yield this.knex('test1').insert({ name: 'john' }).returning('*').hooks(false);
+    yield this.knex('test1').update({ name: 'john' }).returning('*').hooks(false);
+    yield this.knex('test1').delete().where({ name: 'john' }).returning('*').hooks(false);
+    yield this.knex('test1').select('*').hooks(false);
+    yield this.knex.transaction(function(trx) {
+      return co.wrap(function *() {
+        yield trx('test1').insert({ name: 'john' }).returning('*').hooks(false);
+        yield trx('test1').update({ name: 'john' }).returning('*').hooks(false);
+        yield trx('test1').delete().where({ name: 'john' }).returning('*').hooks(false);
+        yield trx('test1').select('*').hooks(false);
+      })();
+    });
+    values(handlers).forEach(handler => {
+      expect(handler.spy.called).to.equal(false);
+    });
+  }));
+
   describe('helpers', () => {
 
     describe('getInsertData', () => {
@@ -421,4 +440,4 @@ describe('knex-hooks', function () {
 
 });
 
-// multi db tests
+// TODO multi db tests

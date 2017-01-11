@@ -25,6 +25,21 @@ const knexHooks = function (knex) {
 
   helpers.extendKnex(knex, (knex, isRoot) => {
 
+    (function (queryBuilder) {
+      knex.client.queryBuilder = function () {
+        const qb = queryBuilder.apply(this, arguments);
+        qb.__hooks = true;
+        qb.hooks = function (enable) {
+          if (!arguments.length) {
+            enable = true;
+          }
+          this.__hooks = !!enable;
+          return this;
+        };
+        return qb;
+      };
+    })(knex.client.queryBuilder);
+
     (function (runner) {
       knex.client.runner = function () {
         const _runner = runner.apply(this, arguments);
@@ -32,7 +47,7 @@ const knexHooks = function (knex) {
           _runner.run = function () {
             const args = arguments;
             const params = builderParams(this.builder);
-            if (!params) {
+            if (!params || !this.builder.__hooks) {
               return run.apply(this, args);
             }
             return runHooks('before', params.method, params.table, {

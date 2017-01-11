@@ -17,7 +17,8 @@
   "description": "Knex before/after insert/update/select/delete hooks",
   "main": "src/knex-hooks.js",
   "scripts": {
-    "test": "./node_modules/.bin/eslint ./src/** ./test/** && ./node_modules/.bin/mocha -R spec"
+    "test": "./node_modules/.bin/eslint ./src/** ./test/** && ./node_modules/.bin/mocha -R spec",
+    "publish": "npm version $1 && npm publish && git push --tags"
   },
   "author": {
     "name": "Alek Barszczewski",

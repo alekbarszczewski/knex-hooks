@@ -37,7 +37,7 @@ knex.addHook(when, method, table, function callback (when, method, table, params
 
 Adds new hook to knex instance
 
-| argument | type                 | possible values / description
+| argument | type                 | possible values / description / examples
 |----------|----------------------|-----------------------
 | when     | string/array<string> | `"before"`, `"after"`, `"*"`, `["before", "after"]`
 | method   | string/array<string> | `"insert"`, `"update"`, `"delete"`, `"select"`, `"*"`, `["insert", "update", ...]`
@@ -45,7 +45,7 @@ Adds new hook to knex instance
 
 Callback arguments
 
-| argument      | type         | possible values
+| argument      | type         | possible values / description / examples
 |---------------|--------------|-----------------------
 | when          | string       | `"before"`, `"after"`
 | method        | string       | `"insert"`, `"update"`, `"delete"`, `"select"`
@@ -91,11 +91,19 @@ knex.addHook('after', 'select', 'users', (when, method, table, params) => {
 knex('users').select('*').then(...);
 ```
 
+#### Disabling hooks
+
+You can disable ALL hooks executing by calling `.hooks(false)` method on knex builder:
+
+```js
+knex('users').insert({ name: 'john' }).hooks(false).then(...); // hooks won't run for this query
+```
+
 #### Helpers
 
-Helpers are methods to simplify working with knex `query` objects.
-
 **getInsertData** / **getUpdateData**
+
+These helpers allows to easily get inert/update data from knex builder
 
 ```js
 const helpers = require('knex-hooks').helpers;
@@ -127,5 +135,6 @@ const helpers = require('knex-hooks').helpers;
 helpers.extendBuilder(knex, function callback (builder, isRoot) {
   // builder is knex query builder instance
   // you can modify builder here (ie. add some methods/properties to it)
+  // for example builder.myCustomMethod = function () { this._myCustomFlag = true; };
 });
 ```
