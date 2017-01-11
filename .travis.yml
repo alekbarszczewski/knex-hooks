@@ -29,6 +29,7 @@ script:
 - export OCI_LIB_DIR=/u01/app/oracle/product/11.2.0/xe/lib
 - export LD_LIBRARY_PATH=/u01/app/oracle/product/11.2.0/xe/lib
 - KNEX_CLIENT=pg DATABASE_URL=postgres://localhost/knex_hooks_test npm test
+- KNEX_CLIENT=mysql DATABASE_URL=mysql://root@localhost/knex_hooks_test npm test
 
 env:
 - CXX=g++-4.8
