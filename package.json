@@ -36,6 +36,7 @@
   "devDependencies": {
     "eslint": "^3.13.1",
     "expect.js": "^0.3.1",
+    "knex": "^0.12.6",
     "mariasql": "^0.2.6",
     "mocha": "^3.2.0",
     "mysql": "^2.12.0",
