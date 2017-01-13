@@ -1,6 +1,8 @@
 
 # knex-hooks
 
+[![Build Status](https://travis-ci.org/alekbarszczewski/knex-hooks.svg?branch=master)](https://travis-ci.org/alekbarszczewski/knex-hooks)
+
 Allows to easily add before/after insert/update/delete/select hooks to knex.
 
 ## Install
