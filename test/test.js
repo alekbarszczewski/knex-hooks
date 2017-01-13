@@ -314,6 +314,29 @@ describe('knex-hooks', function () {
     });
   }));
 
+  it('should throw TypeError on any invalid argument', function () {
+    const sets = [
+      [10, 'insert', 'table1', function () {}],
+      [['before', 10], 'insert', 'table1', function () {}],
+      ['before', 10, 'table1', function () {}],
+      ['before', ['insert', 10], 'table1', function () {}],
+      ['before', 'insert', 10, function () {}],
+      ['before', 'insert', ['table1', 10], function () {}],
+      ['before', 'insert', 'table1', 10],
+      ['before', 'insert', 'table1'],
+    ];
+    const errors = [];
+    sets.forEach(args => {
+      expect(this.knex.addHook.bind(this.knex, args[0], args[1], args[2], args[3])).to.throwError((err) => {
+        errors.push(err);
+      });
+    });
+    expect(errors.length).to.equal(sets.length);
+    errors.forEach(err => {
+      expect(err).to.be.a(TypeError);
+    });
+  });
+
   describe('helpers', () => {
 
     describe('getInsertData', () => {
@@ -324,6 +347,12 @@ describe('knex-hooks', function () {
         expect(data).to.eql({ name: 'john' });
       });
 
+      it('should throw error on invalid argument', function () {
+        expect(helpers.getInsertData.bind(helpers, {})).to.throwError((err) => {
+          expect(err).to.be.a(TypeError);
+        });
+      });
+
     });
 
     describe('getUpdateData', () => {
@@ -332,6 +361,12 @@ describe('knex-hooks', function () {
         const query = this.knex('test1').update({ name: 'john' });
         const data = helpers.getUpdateData(query);
         expect(data).to.eql({ name: 'john' });
+      });
+
+      it('should throw error on invalid argument', function () {
+        expect(helpers.getInsertData.bind(helpers, {})).to.throwError((err) => {
+          expect(err).to.be.a(TypeError);
+        });
       });
 
     });
@@ -381,6 +416,12 @@ describe('knex-hooks', function () {
           expect(trx.__isRoot2).to.equal(false);
         });
       }));
+
+      it('should throw error on invalid `callback` argument', function () {
+        expect(helpers.extendKnex.bind(helpers, this.knex, {})).to.throwError((err) => {
+          expect(err).to.be.a(TypeError);
+        });
+      });
 
     });
 
@@ -433,6 +474,12 @@ describe('knex-hooks', function () {
         });
         expect(trx).to.equal(true);
       }));
+
+      it('should throw error on invalid `callback` argument', function () {
+        expect(helpers.extendBuilder.bind(helpers, this.knex, {})).to.throwError((err) => {
+          expect(err).to.be.a(TypeError);
+        });
+      });
 
     });
 

@@ -27,6 +27,7 @@
   "license": "ISC",
   "dependencies": {
     "co": "^4.6.0",
+    "lodash.isfunction": "^3.0.8",
     "lodash.remove": "^4.7.0",
     "make-array": "^1.0.1",
     "object.values": "^1.0.4"

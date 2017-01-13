@@ -93,7 +93,7 @@ knex('users').select('*').then(...);
 
 #### Disabling hooks
 
-You can disable ALL hooks executing by calling `.hooks(false)` method on knex builder:
+You can disable ALL hooks on individual query by calling `.hooks(false)` method on knex builder:
 
 ```js
 knex('users').insert({ name: 'john' }).hooks(false).then(...); // hooks won't run for this query

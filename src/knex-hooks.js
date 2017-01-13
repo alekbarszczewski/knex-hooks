@@ -2,9 +2,12 @@
 const makeArray = require('make-array');
 const co = require('co');
 const remove = require('lodash.remove');
+const isFunction = require('lodash.isfunction');
 const builderParams = require('./builder-params');
 const runHooks = require('./run-hooks');
 const helpers = require('./helpers');
+const errorMessages = require('./error-messages');
+const enumOrArray = require('./enum-or-array');
 
 const knexHooks = function (knex) {
   if (knex.addHook) {
@@ -14,12 +17,36 @@ const knexHooks = function (knex) {
   let hooks = [];
 
   knex.addHook = function (when, method, table, handler) {
+
+    // validate arguments
+    if (!enumOrArray(when, ['before', 'after', '*'])) {
+      throw new TypeError(errorMessages.addHook_when);
+    }
+    if (!enumOrArray(method, ['insert', 'update', 'delete', 'select', '*'])) {
+      throw new TypeError(errorMessages.addHook_method);
+    }
+    if (Array.isArray(table)) {
+      table.forEach(t => {
+        if (typeof t !== 'string') {
+          throw new TypeError(errorMessages.addHook_table);
+        }
+      });
+    } else if (typeof table !== 'string') {
+      throw new TypeError(errorMessages.addHook_table);
+    }
+    if (!isFunction(handler)) {
+      throw new TypeError(errorMessages.addHook_handler);
+    }
+
+    // add hook
     hooks.push({
       when: makeArray(when).map(v => (v.toLowerCase())),
       method: makeArray(method).map(v => (v.toLowerCase())),
       table: makeArray(table),
       handler: co.wrap(handler),
     });
+
+    // make it chainable
     return knex;
   };
 
