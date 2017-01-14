@@ -279,15 +279,14 @@ describe('knex-hooks', function () {
         yield trx('test1').update({ name: 'john' }).returning('*');
         yield trx('test1').delete().where({ name: 'john' }).returning('*');
         yield trx('test1').select('*');
-        // TODO something in wrong with nested transactions; it hangs-up
-        /*yield trx.transaction(function (trx2) {
+        yield trx.transaction(function (trx2) {
           return co.wrap(function *() {
-            yield trx2('test1').insert({ name: 'john' }).returning('*').context({}).hooks(true);
-            yield trx2('test1').update({ name: 'john' }).returning('*').context({}).hooks(true);
-            yield trx2('test1').delete().where({ name: 'john' }).returning('*').context({}).hooks(true);
-            yield trx2('test1').select('*').context({}).hooks(true);
-          });
-        });*/
+            yield trx2('test1').insert({ name: 'john' }).returning('*');
+            yield trx2('test1').update({ name: 'john' }).returning('*');
+            yield trx2('test1').delete().where({ name: 'john' }).returning('*');
+            yield trx2('test1').select('*');
+          })();
+        });
       })();
     });
     values(handlers).forEach(handler => {
