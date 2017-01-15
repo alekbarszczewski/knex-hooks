@@ -8,7 +8,7 @@ const _runHooks = co.wrap(function *(when, method, table, params) {
 
   const isAfter = when === 'after';
 
-  // select filters to run
+  // select hooks to run
   const hooks = params.hooks.filter(hook => {
     return (hook.when.indexOf(when) !== -1 || hook.when.indexOf('*') !== -1)
       && (hook.method.indexOf(method) !== -1 || hook.method.indexOf('*') !== -1)

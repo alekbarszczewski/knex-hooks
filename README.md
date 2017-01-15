@@ -23,6 +23,23 @@ const knex = require('knex')({
 
 // init knex-hooks on knex instance
 knexHooks(knex);
+
+// add hook
+knex.addHook('before', 'insert', 'users', (when, method, table, params) => {
+
+  // use helper to extract insert data from query builder
+  const data = knexHooks.helpers.getInsertData(params.query);
+
+  // check if it's single row or multi row insert
+  const rows = Array.isArray(data) ? data : [data];
+
+  // modify insert data for each row
+  rows.forEach(row => {
+    row.created_at = new Date();
+  });
+});
+
+knex('users').insert({ name: 'john' }).then(...);
 ```
 
 ## Usage
