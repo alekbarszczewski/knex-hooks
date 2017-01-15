@@ -11,7 +11,7 @@ Allows to easily add before/after insert/update/delete/select hooks to knex.
 npm install --save knex-hooks
 ```
 
-## Init
+## Usage
 
 ```js
 const knexHooks = require('knex-hooks');
@@ -41,8 +41,6 @@ knex.addHook('before', 'insert', 'users', (when, method, table, params) => {
 
 knex('users').insert({ name: 'john' }).then(...);
 ```
-
-## Usage
 
 #### Adding hooks
 
