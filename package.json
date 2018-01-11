@@ -2,7 +2,7 @@
   "name": "knex-hooks",
   "version": "0.0.4",
   "engines": {
-    "node": ">=6.x <=8.x"
+    "node": ">=6.x"
   },
   "keywords": [
     "knex",
