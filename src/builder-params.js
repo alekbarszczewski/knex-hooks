@@ -7,6 +7,7 @@ const builderParams = function (builder) {
   if (methods.indexOf(method) === -1) { return null; }
   const table = builder._single.table;
   if (!table) { return null; }
+  if (typeof table === 'object') { return builderParams(table) }
   const params = { method, table };
   return params;
 };
