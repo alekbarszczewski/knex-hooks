@@ -79,6 +79,30 @@ describe('knex-hooks', function () {
     });
   }));
 
+  it('should run before/after first method hooks', co.wrap(function *() {
+    const handlers = addHandlers(this.knex, 'test1');
+    yield this.knex('test1').insert({ name: 'john' }).returning('*');
+    yield this.knex('test1').update({ name: 'john' }).returning('*');
+    yield this.knex('test1').first();
+    yield this.knex('test1').delete().where({ name: 'john' }).returning('*');
+    values(handlers).forEach(handler => {
+      expect(handler.spy.calledOnce).to.equal(true);
+      expect(handler.spy.firstCall.args[0]).to.equal(handler.when);
+      expect(handler.spy.firstCall.args[1]).to.equal(handler.method);
+      expect(handler.spy.firstCall.args[2]).to.equal(handler.table);
+      const params = handler.spy.firstCall.args[3];
+      expect(params.query).to.be.a(Builder);
+      if (handler.when === 'before') {
+        expect(params.result).to.equal(undefined);
+      } else {
+        const expectedResult = params.query._method === 'first'
+          ? { id: 1, name: 'john' }
+          : [{ id: 1, name: 'john' }];
+        expect(params.result).to.eql(expectedResult);
+      }
+    });
+  }));
+
   it('should allow to modify input data via builder', co.wrap(function *() {
     const hooks = {};
     ['before'].forEach(when => {
@@ -335,6 +359,12 @@ describe('knex-hooks', function () {
       expect(err).to.be.a(TypeError);
     });
   });
+
+  // it('should work with first() method', () => {
+  //   knex('users')
+  //   .where('id')
+  //   .first();
+  // });
 
   describe('helpers', () => {
 
