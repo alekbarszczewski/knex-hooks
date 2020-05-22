@@ -26,6 +26,7 @@
   },
   "license": "ISC",
   "dependencies": {
+    "bluebird": "^3.7.2",
     "co": "^4.6.0",
     "lodash.isfunction": "^3.0.8",
     "lodash.remove": "^4.7.0",
